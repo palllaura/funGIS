@@ -1,11 +1,23 @@
 package ee.smit.fungis;
 
+import ee.smit.fungis.entity.Location;
 import ee.smit.fungis.repository.LocationRepository;
 import ee.smit.fungis.service.LocationService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class LocationServiceTests {
@@ -18,5 +30,47 @@ class LocationServiceTests {
 		repository = mock(LocationRepository.class);
 		service = new LocationService(repository);
 	}
+
+	/**
+	 * Helper method to create a location.
+	 * @return location object.
+	 */
+	private Location createTestLocation() {
+		Location location = new Location();
+		location.setId(555L);
+
+		GeometryFactory factory = new GeometryFactory(new PrecisionModel(), 4326);
+		Point point = factory.createPoint(new Coordinate(1111, 2222));
+		location.setCoordinates(point);
+
+		location.setDescription("Exactly 3 chanterelles");
+
+		return location;
+	}
+
+	@Test
+	void testGetAllLocationsTriggersCorrectMethodInRepository() {
+		service.getAllLocations();
+		verify(repository, times(1)).findAll();
+	}
+
+	@Test
+	void testGetAllLocationsReturnsEmptyListWhenNoLocations() {
+		when(repository.findAll()).thenReturn(List.of());
+		List<Location> result = service.getAllLocations();
+		Assertions.assertTrue(result.isEmpty());
+	}
+
+	@Test
+	void testGetAllLocationsReturnsCorrectLocations() {
+		Location location1 = createTestLocation();
+		Location location2 = createTestLocation();
+
+		when(repository.findAll()).thenReturn(List.of(location1, location2));
+		List<Location> result = service.getAllLocations();
+		Assertions.assertEquals(List.of(location1, location2), result);
+	}
+
+
 
 }
