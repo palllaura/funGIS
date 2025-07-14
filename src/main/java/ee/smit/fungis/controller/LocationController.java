@@ -3,9 +3,12 @@ package ee.smit.fungis.controller;
 import ee.smit.fungis.dto.LocationInputDTO;
 import ee.smit.fungis.entity.Location;
 import ee.smit.fungis.service.LocationService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -80,5 +83,20 @@ public class LocationController {
             ));
         }
     }
+
+    /**
+     * Delete location by id.
+     * @param id id of location.
+     * @return response entity with result message.
+     */
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteLocation(@PathVariable Long id) {
+        if (service.deleteLocationById(id)) {
+            return ResponseEntity.ok(Map.of("message", "Location deleted successfully!"));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "Location not found."));
+        }
+    }
+
 
 }

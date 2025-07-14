@@ -7,6 +7,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -61,5 +62,18 @@ public class LocationService {
         return true;
     }
 
+    /**
+     * Delete location from database.
+     * @param id ID of location to delete.
+     * @return true if location was deleted, false if not found or error.
+     */
+    public boolean deleteLocationById(Long id) {
+        try {
+            repository.deleteById(id);
+            return true;
+        } catch (EmptyResultDataAccessException e) {
+            return false;
+        }
+    }
 
 }

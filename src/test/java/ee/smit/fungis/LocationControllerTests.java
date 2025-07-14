@@ -107,4 +107,27 @@ class LocationControllerTests {
         Assertions.assertEquals(expectedBody, result.getBody());
     }
 
+    @Test
+    void testDeleteLocationSuccess() {
+        Long id = 555L;
+        when(service.deleteLocationById(id)).thenReturn(true);
+
+        ResponseEntity<?> result = controller.deleteLocation(id);
+
+        Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
+        Assertions.assertEquals(Map.of("message", "Location deleted successfully!"), result.getBody());
+    }
+
+    @Test
+    void testDeleteLocationNotFound() {
+        Long id = 555L;
+        when(service.deleteLocationById(id)).thenReturn(false);
+
+        ResponseEntity<?> result = controller.deleteLocation(id);
+
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        Assertions.assertEquals(Map.of("message", "Location not found."), result.getBody());
+    }
+
+
 }

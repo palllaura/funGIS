@@ -12,10 +12,12 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -122,6 +124,22 @@ class LocationServiceTests {
 		LocationInputDTO dto = createCorrectInputDto();
 		dto.setCoordinates(List.of(1111.0));
 		boolean result = service.addLocation(dto);
+		Assertions.assertFalse(result);
+	}
+
+	@Test
+	void testDeleteLocationCorrectTriggersDeleteInRepository() {
+		Long id = 555L;
+		boolean result = service.deleteLocationById(id);
+		verify(repository, times(1)).deleteById(id);
+		Assertions.assertTrue(result);
+	}
+
+	@Test
+	void testDeleteLocationByIdResultsFalseWhenNotFound() {
+		Long id = 555L;
+		doThrow(new EmptyResultDataAccessException(1)).when(repository).deleteById(id);
+		boolean result = service.deleteLocationById(id);
 		Assertions.assertFalse(result);
 	}
 }
