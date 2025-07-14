@@ -1,6 +1,7 @@
 package ee.smit.fungis;
 
 import ee.smit.fungis.controller.LocationController;
+import ee.smit.fungis.dto.LocationInputDTO;
 import ee.smit.fungis.entity.Location;
 import ee.smit.fungis.service.LocationService;
 import org.junit.jupiter.api.Assertions;
@@ -11,6 +12,8 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -77,6 +80,31 @@ class LocationControllerTests {
         Map<String, Object> properties = (Map<String, Object>) feature.get("properties");
         Assertions.assertEquals(555L, properties.get("id"));
         Assertions.assertEquals("Exactly 3 chanterelles", properties.get("description"));
+    }
+
+    @Test
+    void testAddLocationCorrect() {
+        LocationInputDTO dto = new LocationInputDTO();
+
+        when(service.addLocation(dto)).thenReturn(true);
+        ResponseEntity<?> result = controller.addLocation(dto);
+
+        Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
+
+        Map<String, String> expectedBody = Map.of("message", "Location added successfully!");
+        Assertions.assertEquals(expectedBody, result.getBody());
+    }
+
+    @Test
+    void testAddLocationFailure() {
+        LocationInputDTO dto = new LocationInputDTO();
+
+        when(service.addLocation(dto)).thenReturn(false);
+        ResponseEntity<?> result = controller.addLocation(dto);
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+        Map<String, String> expectedBody = Map.of("message", "Failed to save location.");
+        Assertions.assertEquals(expectedBody, result.getBody());
     }
 
 }

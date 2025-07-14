@@ -1,9 +1,13 @@
 package ee.smit.fungis.controller;
 
+import ee.smit.fungis.dto.LocationInputDTO;
 import ee.smit.fungis.entity.Location;
 import ee.smit.fungis.service.LocationService;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -58,4 +62,23 @@ public class LocationController {
                 "features", features
         );
     }
+
+    /**
+     * Add new location.
+     * @param input dto with location data.
+     * @return response entity with result message.
+     */
+    @PostMapping("/add")
+    public ResponseEntity<?> addLocation(@RequestBody LocationInputDTO input) {
+        if (service.addLocation(input)) {
+            return ResponseEntity.ok(Map.of(
+                    "message", "Location added successfully!"
+            ));
+        } else {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "message", "Failed to save location."
+            ));
+        }
+    }
+
 }

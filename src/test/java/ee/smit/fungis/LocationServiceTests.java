@@ -1,5 +1,6 @@
 package ee.smit.fungis;
 
+import ee.smit.fungis.dto.LocationInputDTO;
 import ee.smit.fungis.entity.Location;
 import ee.smit.fungis.repository.LocationRepository;
 import ee.smit.fungis.service.LocationService;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -44,9 +46,21 @@ class LocationServiceTests {
 		location.setCoordinates(point);
 
 		location.setDescription("Exactly 3 chanterelles");
-
 		return location;
 	}
+
+	/**
+	 * Helper method to create a correct LocationInputDto.
+	 * @return dto.
+	 */
+	private LocationInputDTO createCorrectInputDto() {
+		LocationInputDTO dto = new LocationInputDTO();
+		dto.setType("Point");
+		dto.setCoordinates(List.of(1111.0, 2222.0));
+		dto.setDescription("One huge portobello");
+		return dto;
+	}
+
 
 	@Test
 	void testGetAllLocationsTriggersCorrectMethodInRepository() {
@@ -71,6 +85,43 @@ class LocationServiceTests {
 		Assertions.assertEquals(List.of(location1, location2), result);
 	}
 
+	@Test
+	void testAddLocationCorrectTriggersSaveInRepository() {
+		LocationInputDTO dto = createCorrectInputDto();
+		boolean result = service.addLocation(dto);
+		verify(repository, times(1)).save(any(Location.class));
+		Assertions.assertTrue(result);
+	}
 
+	@Test
+	void testAddLocationFailsGeometryTypeIsMissing() {
+		LocationInputDTO dto = createCorrectInputDto();
+		dto.setType(null);
+		boolean result = service.addLocation(dto);
+		Assertions.assertFalse(result);
+	}
 
+	@Test
+	void testAddLocationFailsGeometryTypeIsIncorrect() {
+		LocationInputDTO dto = createCorrectInputDto();
+		dto.setType("");
+		boolean result = service.addLocation(dto);
+		Assertions.assertFalse(result);
+	}
+
+	@Test
+	void testAddLocationFailsCoordinatesAreMissing() {
+		LocationInputDTO dto = createCorrectInputDto();
+		dto.setCoordinates(null);
+		boolean result = service.addLocation(dto);
+		Assertions.assertFalse(result);
+	}
+
+	@Test
+	void testAddLocationFailsCoordinatesAreIncorrect() {
+		LocationInputDTO dto = createCorrectInputDto();
+		dto.setCoordinates(List.of(1111.0));
+		boolean result = service.addLocation(dto);
+		Assertions.assertFalse(result);
+	}
 }
