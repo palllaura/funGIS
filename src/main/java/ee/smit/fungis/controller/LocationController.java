@@ -85,6 +85,25 @@ public class LocationController {
     }
 
     /**
+     * Edit existing location.
+     * @param id id of location.
+     * @param input dto with data.
+     * @return response entity with result message.
+     */
+    @PostMapping("/edit/{id}")
+    public ResponseEntity<?> editLocation(@PathVariable Long id, @RequestBody LocationInputDTO input) {
+        if (service.editLocation(id, input)) {
+            return ResponseEntity.ok(Map.of(
+                    "message", "Location edited successfully!"
+            ));
+        } else {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "message", "Failed to edit location."
+            ));
+        }
+    }
+
+    /**
      * Delete location by id.
      * @param id id of location.
      * @return response entity with result message.

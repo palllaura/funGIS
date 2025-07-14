@@ -129,5 +129,29 @@ class LocationControllerTests {
         Assertions.assertEquals(Map.of("message", "Location not found."), result.getBody());
     }
 
+    @Test
+    void testEditLocationReturnsOkWhenSuccessful() {
+        Long id = 555L;
+        LocationInputDTO dto = new LocationInputDTO();
+        when(service.editLocation(id, dto)).thenReturn(true);
+
+        ResponseEntity<?> response = controller.editLocation(id, dto);
+
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals("Location edited successfully!", ((Map<?, ?>) response.getBody()).get("message"));
+    }
+
+    @Test
+    void testEditLocationReturnsBadRequestWhenUnsuccessful() {
+        Long id = 555L;
+        LocationInputDTO dto = new LocationInputDTO();
+        when(service.editLocation(id, dto)).thenReturn(false);
+
+        ResponseEntity<?> response = controller.editLocation(id, dto);
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Assertions.assertEquals("Failed to edit location.", ((Map<?, ?>) response.getBody()).get("message"));
+    }
+
 
 }

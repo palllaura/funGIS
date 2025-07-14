@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -142,4 +143,31 @@ class LocationServiceTests {
 		boolean result = service.deleteLocationById(id);
 		Assertions.assertFalse(result);
 	}
+
+	@Test
+	void testEditLocationSuccess() {
+		Long id = 555L;
+		Location location = new Location();
+		location.setId(id);
+
+		LocationInputDTO dto = new LocationInputDTO();
+		dto.setType("Point");
+		dto.setCoordinates(List.of(25.0, 59.0));
+		dto.setDescription("Updated description");
+
+		when(repository.findById(id)).thenReturn(Optional.of(location));
+
+		boolean result = service.editLocation(id, dto);
+
+		Assertions.assertTrue(result);
+		verify(repository).save(any(Location.class));
+	}
+
+	@Test
+	void testEditLocationFailsOnInvalidInput() {
+		LocationInputDTO dto = new LocationInputDTO();
+		boolean result = service.editLocation(555L, dto);
+		Assertions.assertFalse(result);
+	}
+
 }

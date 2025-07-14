@@ -11,6 +11,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LocationService {
@@ -38,19 +39,11 @@ public class LocationService {
      * @param dto input data.
      */
     public boolean addLocation(LocationInputDTO dto) {
-        if (!"Point".equalsIgnoreCase(dto.getType())) {
+        if (!validateLocationInput(dto)) {
             return false;
         }
-
-        List<Double> coords = dto.getCoordinates();
-        if (coords == null || coords.size() != 2) {
-            return false;
-        }
-
-        Point point = new GeometryFactory(new PrecisionModel(), 4326)
-                .createPoint(new Coordinate(coords.get(0), coords.get(1)));
-
         Location location = new Location();
+        Point point = getPointFromCoordinates(dto.getCoordinates());
         location.setCoordinates(point);
         location.setDescription(dto.getDescription());
 
@@ -74,6 +67,61 @@ public class LocationService {
         } catch (EmptyResultDataAccessException e) {
             return false;
         }
+    }
+
+    /**
+     * Edit existing location.
+     * @param id id of location.
+     * @param dto dto with location data.
+     * @return true if was edited, else false.
+     */
+    public boolean editLocation(Long id, LocationInputDTO dto) {
+        if (!validateLocationInput(dto)) {
+            return false;
+        }
+        Optional<Location> locationOptional = repository.findById(id);
+        if (locationOptional.isEmpty()) {
+            return false;
+        }
+
+        Location location = locationOptional.get();
+        Point point = getPointFromCoordinates(dto.getCoordinates());
+        location.setCoordinates(point);
+        location.setDescription(dto.getDescription());
+
+        try {
+            repository.save(location);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Validate location input fields.
+     * @param dto dto to validate.
+     * @return true if valid, else false.
+     */
+    private boolean validateLocationInput(LocationInputDTO dto) {
+        if (!"Point".equalsIgnoreCase(dto.getType())) {
+            return false;
+        }
+
+        List<Double> coords = dto.getCoordinates();
+        if (coords == null || coords.size() != 2) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Get point from coordinates.
+     * @param coords List with coordinates.
+     * @return point.
+     */
+    private Point getPointFromCoordinates(List<Double> coords) {
+        return new GeometryFactory(new PrecisionModel(), 4326)
+                .createPoint(new Coordinate(coords.get(0), coords.get(1)));
     }
 
 }
