@@ -1,15 +1,50 @@
 #root {
   max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
   text-align: center;
 }
 
 .logo {
-  height: 10em;
-  padding: 1.5em;
+  height: 6em;
   will-change: filter;
 }
 .logo:hover {
   transform: rotate(-5deg);
+}
+
+.app-container {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  background-color: #ececec;
+  padding-top: 1em;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: #0095e9;
+}
+
+.map-view {
+  flex: 1;
+  width: 200vh;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #0095e9;
+  margin: 1rem;
+  border-radius: 4px;
+}
+
+button {
+  border: none;
+  background: #0095e9;
+  height: 2rem;
+  width: 2rem;
+  border-radius: 4px;
+}
+
+button:hover {
+  background: rgba(0, 149, 233, 0.83);
 }

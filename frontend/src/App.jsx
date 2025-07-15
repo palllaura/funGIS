@@ -1,13 +1,14 @@
-import fungisLogo from './assets/logo.png'
+import Sidebar from './components/Sidebar';
+import MapView from './components/MapView';
 import './App.css'
 
 function App() {
 
   return (
-    <>
-        <img src={fungisLogo} className="logo" alt="funGIS logo" />
-        <h1>funGIS</h1>
-    </>
+      <div className="app-container">
+          <Sidebar />
+          <MapView />
+      </div>
   )
 }
 
