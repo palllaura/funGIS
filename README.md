@@ -9,12 +9,13 @@ A mushroom spot registry
 * Delete a location
 * Load initial data from a .json (?) file
 * Uses a PostgreSQL database
-* Frontend built with ??? TBA
+* Frontend built with React
 * OpenStreetMap
 * Backend built with Java Spring Boot
 
 ## Prerequisites
 * Java 17+
+* Node.js + npm
 * A package manager like Gradle
 * A code editor like IntelliJ IDEA
 
@@ -34,9 +35,17 @@ A mushroom spot registry
 4. The backend server will start at:
    http://localhost:8080
 
-### Frontend (TBA)
+### Frontend (React)
 1. Navigate to the frontend folder:
    ```bash
    cd frontend
-2. ???
+2. Install dependencies:
+   ```bash
+   npm install
+3. Start the development server:
+   ```bash
+   npm run dev
+4. The frontend will be available at:
+   http://localhost:5173
+
 
