@@ -35,7 +35,7 @@ public class LocationController {
      * Get all locations from the database.
      * @return map of locations.
      */
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/locations", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> getAllLocations() {
         List<Location> locations = service.getAllLocations();
 

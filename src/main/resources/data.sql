@@ -18,4 +18,6 @@ VALUES (1001, ST_SetSRID(ST_Point(24.7536, 59.4370), 4326),
        (1009, ST_SetSRID(ST_Point(26.0424, 58.9376), 4326),
         'Tiny chanterelles in Paide meadow'),
        (1010, ST_SetSRID(ST_Point(23.5611, 59.0198), 4326),
-        'Giant mushroom near Kärdla');
+        'Giant mushroom near Kärdla')
+ON CONFLICT (id) DO NOTHING;
+
