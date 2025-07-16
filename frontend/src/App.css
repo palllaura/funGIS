@@ -1,3 +1,5 @@
+@import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+
 #root {
   max-width: 1280px;
   text-align: center;
@@ -14,6 +16,7 @@
 .app-container {
   display: flex;
   height: 100vh;
+  width: 100vw;
 }
 
 .sidebar {
@@ -21,13 +24,11 @@
   padding-top: 1em;
   display: flex;
   flex-direction: column;
-  height: 100%;
   color: #0095e9;
 }
 
 .map-view {
   flex: 1;
-  width: 200vh;
   background-color: #ffffff;
   display: flex;
   justify-content: center;
