@@ -47,5 +47,7 @@ A mushroom spot registry
    npm run dev
 4. The frontend will be available at:
    http://localhost:5173
+   
+<img width="1680" height="1050" alt="Screenshot 2025-07-18 at 17 28 31" src="https://github.com/user-attachments/assets/8ac3c841-7019-413a-aacc-e8df1641e477" />
 
 
