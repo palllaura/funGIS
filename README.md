@@ -13,7 +13,7 @@ A web application for registering and managing mushroom locations in Estonia.
 * Uses PostgreSQL as the database
 
 ## Prerequisites
-* Java 21+
+* Java 17+
 * Node.js + npm
 * Gradle (or use the included `./gradlew`)
 * An IDE or code editor (e.g., IntelliJ IDEA)
