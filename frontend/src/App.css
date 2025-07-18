@@ -6,9 +6,9 @@
 }
 
 .logo {
-  height: 6em;
   will-change: filter;
 }
+
 .logo:hover {
   transform: rotate(-5deg);
 }
@@ -20,6 +20,7 @@
 }
 
 .sidebar {
+  width: 130px;
   background-color: #ececec;
   padding-top: 1em;
   display: flex;
@@ -41,11 +42,42 @@
 button {
   border: none;
   background: #0095e9;
-  height: 2rem;
-  width: 2rem;
   border-radius: 4px;
+  padding: 5px 10px 5px 10px;
 }
 
 button:hover {
   background: rgba(0, 149, 233, 0.83);
+}
+
+input {
+  background: white;
+  border: solid 1px #0069e0;
+  color: #0069e0;
+  padding: 5px;
+  margin-top: 5px;
+  width: 250px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: white;
+  color: #0069e0;
+  padding: 1rem;
+  border-radius: 10px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }

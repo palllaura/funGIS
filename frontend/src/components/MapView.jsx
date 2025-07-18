@@ -1,10 +1,11 @@
 import '../App.css';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import AddLocationOnClick from './AddLocationOnClick';
 
 const estoniaCenter = [58.5953, 25.0136];
 
-export default function MapView({ locations }) {
+export default function MapView({ locations, handleAddLocation }) {
 
     return (
         <MapContainer
@@ -31,6 +32,7 @@ export default function MapView({ locations }) {
                     <Popup>{feature.properties.description}</Popup>
                 </Marker>
             ))}
+            <AddLocationOnClick onAdd={handleAddLocation} />
         </MapContainer>
     );
 }

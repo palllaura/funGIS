@@ -1,5 +1,6 @@
 package ee.smit.fungis;
 
+import ee.smit.fungis.dto.Geometry;
 import ee.smit.fungis.dto.LocationInputDTO;
 import ee.smit.fungis.entity.Location;
 import ee.smit.fungis.repository.LocationRepository;
@@ -14,7 +15,9 @@ import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -58,9 +61,17 @@ class LocationServiceTests {
 	 */
 	private LocationInputDTO createCorrectInputDto() {
 		LocationInputDTO dto = new LocationInputDTO();
-		dto.setType("Point");
-		dto.setCoordinates(List.of(1111.0, 2222.0));
-		dto.setDescription("One huge portobello");
+
+		Geometry geometry = new Geometry();
+		geometry.setType("Point");
+		geometry.setCoordinates(List.of(1111.0, 2222.0));
+		dto.setGeometry(geometry);
+
+		Map<String, String> properties = new HashMap<>();
+		properties.put("description", "One huge portobello");
+
+		dto.setProperties(properties);
+
 		return dto;
 	}
 
@@ -99,7 +110,8 @@ class LocationServiceTests {
 	@Test
 	void testAddLocationFailsGeometryTypeIsMissing() {
 		LocationInputDTO dto = createCorrectInputDto();
-		dto.setType(null);
+		dto.getGeometry().setType(null);
+
 		boolean result = service.addLocation(dto);
 		Assertions.assertFalse(result);
 	}
@@ -107,7 +119,7 @@ class LocationServiceTests {
 	@Test
 	void testAddLocationFailsGeometryTypeIsIncorrect() {
 		LocationInputDTO dto = createCorrectInputDto();
-		dto.setType("");
+		dto.getGeometry().setType("");
 		boolean result = service.addLocation(dto);
 		Assertions.assertFalse(result);
 	}
@@ -115,7 +127,7 @@ class LocationServiceTests {
 	@Test
 	void testAddLocationFailsCoordinatesAreMissing() {
 		LocationInputDTO dto = createCorrectInputDto();
-		dto.setCoordinates(null);
+		dto.getGeometry().setCoordinates(null);
 		boolean result = service.addLocation(dto);
 		Assertions.assertFalse(result);
 	}
@@ -123,7 +135,7 @@ class LocationServiceTests {
 	@Test
 	void testAddLocationFailsCoordinatesAreIncorrect() {
 		LocationInputDTO dto = createCorrectInputDto();
-		dto.setCoordinates(List.of(1111.0));
+		dto.getGeometry().setCoordinates(List.of(1111.0));
 		boolean result = service.addLocation(dto);
 		Assertions.assertFalse(result);
 	}
@@ -150,11 +162,7 @@ class LocationServiceTests {
 		Location location = new Location();
 		location.setId(id);
 
-		LocationInputDTO dto = new LocationInputDTO();
-		dto.setType("Point");
-		dto.setCoordinates(List.of(25.0, 59.0));
-		dto.setDescription("Updated description");
-
+		LocationInputDTO dto = createCorrectInputDto();
 		when(repository.findById(id)).thenReturn(Optional.of(location));
 
 		boolean result = service.editLocation(id, dto);
@@ -166,6 +174,9 @@ class LocationServiceTests {
 	@Test
 	void testEditLocationFailsOnInvalidInput() {
 		LocationInputDTO dto = new LocationInputDTO();
+		Geometry geometry = new Geometry();
+		dto.setGeometry(geometry);
+		dto.setProperties(new HashMap<>());
 		boolean result = service.editLocation(555L, dto);
 		Assertions.assertFalse(result);
 	}

@@ -12,6 +12,38 @@ function App() {
             .then(data => setAllLocations(data));
     };
 
+    const handleAddLocation = (newLocation) => {
+        fetch('http://localhost:8080/api/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                type: "Feature",
+                geometry: {
+                    type: "Point",
+                    coordinates: [newLocation.lng, newLocation.lat]
+                },
+                properties: {
+                    description: newLocation.description
+                }
+            })
+        })
+            .then(res => {
+                if (!res.ok) {
+                    return res.json().then(err => {
+                        throw new Error(err.message || "Failed to add location");
+                    });
+                }
+                return res.json();
+            })
+            .then(() => fetchLocations())
+            .catch(err => {
+                console.error("Error adding location:", err);
+            });
+    };
+
+
     useEffect(() => {
         fetchLocations();
     }, []);
@@ -21,6 +53,7 @@ function App() {
           <Sidebar/>
           <MapView
               locations={allLocations}
+              handleAddLocation={handleAddLocation}
           />
       </div>
   )
