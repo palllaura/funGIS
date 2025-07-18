@@ -17,9 +17,19 @@ A web application for registering and managing mushroom locations in Estonia.
 * Node.js + npm
 * Gradle (or use the included `./gradlew`)
 * An IDE or code editor (e.g., IntelliJ IDEA)
+* Docker
 
 
 ## Installation
+
+### Database (PostgreSQL + PostGIS via Docker)
+1. Download PostGIS image:
+   ```bash
+   docker pull postgis/postgis:17-master 
+2. Run the container:
+   ```bash
+   docker run -d -e POSTGRES_USER=fungis -e POSTGRES_PASSWORD=fungis -p 5432:5432 --name postgis-db postgis/postgis:17-master
+
 ### Backend (Spring Boot)
 1. Clone the repository:
    ```bash
