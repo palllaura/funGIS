@@ -70,7 +70,7 @@ class LocationControllerTests {
         List<Map<String, Object>> features = (List<Map<String, Object>>) result.get("features");
         Assertions.assertEquals(1, features.size());
 
-        Map<String, Object> feature = features.getFirst();
+        Map<String, Object> feature = features.get(0);
         Assertions.assertEquals("Feature", feature.get("type"));
 
         Map<String, Object> geometry = (Map<String, Object>) feature.get("geometry");
