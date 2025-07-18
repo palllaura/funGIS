@@ -42,11 +42,7 @@ public class LocationService {
         if (!validateLocationInput(dto)) {
             return false;
         }
-        Location location = new Location();
-        Point point = getPointFromCoordinates(dto.getCoordinates());
-        location.setCoordinates(point);
-        location.setDescription(dto.getDescription());
-
+        Location location = getLocationFromDto(dto);
         try {
             repository.save(location);
         } catch (Exception e) {
@@ -54,6 +50,8 @@ public class LocationService {
         }
         return true;
     }
+
+
 
     /**
      * Delete location from database.
@@ -85,9 +83,9 @@ public class LocationService {
         }
 
         Location location = locationOptional.get();
-        Point point = getPointFromCoordinates(dto.getCoordinates());
+        Point point = getPointFromCoordinates(dto.getGeometry().getCoordinates());
         location.setCoordinates(point);
-        location.setDescription(dto.getDescription());
+        location.setDescription(dto.getProperties().get("description"));
 
         try {
             repository.save(location);
@@ -103,15 +101,30 @@ public class LocationService {
      * @return true if valid, else false.
      */
     private boolean validateLocationInput(LocationInputDTO dto) {
-        if (!"Point".equalsIgnoreCase(dto.getType())) {
+        if (!"Point".equalsIgnoreCase(dto.getGeometry().getType())) {
+            System.out.println("type is not point");
             return false;
         }
 
-        List<Double> coords = dto.getCoordinates();
+        List<Double> coords = dto.getGeometry().getCoordinates();
         if (coords == null || coords.size() != 2) {
+            System.out.println("coordinates not valid");
             return false;
         }
         return true;
+    }
+
+    /**
+     * Create new Location from LocationInputDto.
+     * @param dto LocationInputDto.
+     * @return Location.
+     */
+    private Location getLocationFromDto(LocationInputDTO dto) {
+        Location location = new Location();
+        Point point = getPointFromCoordinates(dto.getGeometry().getCoordinates());
+        location.setCoordinates(point);
+        location.setDescription(dto.getProperties().get("description"));
+        return location;
     }
 
     /**
