@@ -1,23 +1,22 @@
 # funGIS
-A mushroom spot registry
+A web application for registering and managing mushroom locations in Estonia.
 
 ## Features
 
-* View a map with mushroom locations
-* Add new location with commentary
-* Edit an existing location commentary
-* Delete a location
-* Load initial data from a .json (?) file
-* Uses a PostgreSQL database
+* Interactive map with [OpenStreetMap](https://www.openstreetmap.org/)
+* View mushroom locations
+* Add new location with a description
+* Edit or delete existing locations (currently only on backend)
+* Load initial data from an SQL file
+* Backend built with Java + Spring Boot
 * Frontend built with React
-* OpenStreetMap
-* Backend built with Java Spring Boot
+* Uses PostgreSQL as the database
 
 ## Prerequisites
 * Java 17+
 * Node.js + npm
-* A package manager like Gradle
-* A code editor like IntelliJ IDEA
+* Gradle (or use the included `./gradlew`)
+* An IDE or code editor (e.g., IntelliJ IDEA)
 
 
 ## Installation
@@ -27,7 +26,7 @@ A mushroom spot registry
    git clone https://github.com/palllaura/funGIS.git
    cd fungis
 
-2. Open the project in your IDE (e.g., IntelliJ).
+2. Open the project in your IDE.
 
 3. Build and run the backend:
    ```bash
@@ -49,5 +48,3 @@ A mushroom spot registry
    http://localhost:5173
    
 <img width="1680" height="1050" alt="Screenshot 2025-07-18 at 17 28 31" src="https://github.com/user-attachments/assets/8ac3c841-7019-413a-aacc-e8df1641e477" />
-
-
