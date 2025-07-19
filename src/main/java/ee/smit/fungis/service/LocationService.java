@@ -12,10 +12,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 public class LocationService {
 
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(LocationService.class.getName());
     private final LocationRepository repository;
 
     /**
@@ -48,10 +50,13 @@ public class LocationService {
         } catch (Exception e) {
             return false;
         }
+        String message = String.format("Added new location at %1$s : %2$s, description: %3$s",
+                dto.getGeometry().getCoordinates().get(0),
+                dto.getGeometry().getCoordinates().get(1),
+                dto.getProperties().get("description"));
+        LOGGER.info(message);
         return true;
     }
-
-
 
     /**
      * Delete location from database.
@@ -61,6 +66,8 @@ public class LocationService {
     public boolean deleteLocationById(Long id) {
         try {
             repository.deleteById(id);
+            String message = String.format("Deleted location with id: %1$d", id);
+            LOGGER.info(message);
             return true;
         } catch (EmptyResultDataAccessException e) {
             return false;
@@ -89,6 +96,11 @@ public class LocationService {
 
         try {
             repository.save(location);
+            String message = String.format("Edited location at %1$s : %2$s, description: %3$s",
+                    dto.getGeometry().getCoordinates().get(0),
+                    dto.getGeometry().getCoordinates().get(1),
+                    dto.getProperties().get("description"));
+            LOGGER.info(message);
         } catch (Exception e) {
             return false;
         }
@@ -102,13 +114,13 @@ public class LocationService {
      */
     private boolean validateLocationInput(LocationInputDTO dto) {
         if (!"Point".equalsIgnoreCase(dto.getGeometry().getType())) {
-            System.out.println("type is not point");
+            LOGGER.info("Validation failed because 'Type' is not 'point'");
             return false;
         }
 
         List<Double> coords = dto.getGeometry().getCoordinates();
         if (coords == null || coords.size() != 2) {
-            System.out.println("coordinates not valid");
+            LOGGER.info("Validation failed because coordinates are not valid");
             return false;
         }
         return true;
