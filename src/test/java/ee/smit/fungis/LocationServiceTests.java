@@ -12,6 +12,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
+import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 
@@ -179,6 +180,32 @@ class LocationServiceTests {
 		dto.setProperties(new HashMap<>());
 		boolean result = service.editLocation(555L, dto);
 		Assertions.assertFalse(result);
+	}
+
+	@Test
+	void testUnallowedCharactersAreRemovedFromInput() {
+		LocationInputDTO dto = createCorrectInputDto();
+		dto.getProperties().put("description", "/_One huge portobello<%#");
+		service.addLocation(dto);
+
+		ArgumentCaptor<Location> captor = ArgumentCaptor.forClass(Location.class);
+		verify(repository).save(captor.capture());
+		Location savedLocation = captor.getValue();
+
+		Assertions.assertEquals("One huge portobello", savedLocation.getDescription());
+	}
+
+	@Test
+	void testPunctuationIsNotRemovedFromInput() {
+		LocationInputDTO dto = createCorrectInputDto();
+		dto.getProperties().put("description", "One, (huge), portobello...!");
+		service.addLocation(dto);
+
+		ArgumentCaptor<Location> captor = ArgumentCaptor.forClass(Location.class);
+		verify(repository).save(captor.capture());
+		Location savedLocation = captor.getValue();
+
+		Assertions.assertEquals("One, (huge), portobello...!", savedLocation.getDescription());
 	}
 
 }

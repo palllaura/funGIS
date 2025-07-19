@@ -53,7 +53,7 @@ public class LocationService {
         String message = String.format("Added new location at %1$s : %2$s, description: %3$s",
                 dto.getGeometry().getCoordinates().get(0),
                 dto.getGeometry().getCoordinates().get(1),
-                dto.getProperties().get("description"));
+                location.getDescription());
         LOGGER.info(message);
         return true;
     }
@@ -92,14 +92,16 @@ public class LocationService {
         Location location = locationOptional.get();
         Point point = getPointFromCoordinates(dto.getGeometry().getCoordinates());
         location.setCoordinates(point);
-        location.setDescription(dto.getProperties().get("description"));
+
+        String description = getCleanString(dto.getProperties().get("description"));
+        location.setDescription(description);
 
         try {
             repository.save(location);
             String message = String.format("Edited location at %1$s : %2$s, description: %3$s",
                     dto.getGeometry().getCoordinates().get(0),
                     dto.getGeometry().getCoordinates().get(1),
-                    dto.getProperties().get("description"));
+                    description);
             LOGGER.info(message);
         } catch (Exception e) {
             return false;
@@ -135,7 +137,9 @@ public class LocationService {
         Location location = new Location();
         Point point = getPointFromCoordinates(dto.getGeometry().getCoordinates());
         location.setCoordinates(point);
-        location.setDescription(dto.getProperties().get("description"));
+
+        String description = getCleanString(dto.getProperties().get("description"));
+        location.setDescription(description);
         return location;
     }
 
@@ -147,6 +151,16 @@ public class LocationService {
     private Point getPointFromCoordinates(List<Double> coords) {
         return new GeometryFactory(new PrecisionModel(), 4326)
                 .createPoint(new Coordinate(coords.get(0), coords.get(1)));
+    }
+
+    /**
+     * Remove all characters that aren't letters, numbers or punctuation from input string.
+     * @param input input string.
+     * @return clean string.
+     */
+    private String getCleanString(String input) {
+        return input.replaceAll("[^\\p{L}\\p{N} .,!?()\\-]", "")
+                .trim();
     }
 
 }
